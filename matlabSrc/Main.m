@@ -1,5 +1,9 @@
 clear
 
+p = genpath('Functions');
+addpath(p)
+
+
 % convert parameters into vector U S. 
 % 
 % syms a b baseR plateR sevR l;
@@ -23,8 +27,9 @@ plate.r = 60/2 ; % radious of plate mounting point
 plate.b = 100/180*pi; % angle between plate mounting point. 
 
 
-ee = [ 0 ; 0 ; 40 ; 0 ; 0 ; 0 ] ;
-toolF = q2T (ee)
+ee = [ 10; 10 ; 27 ; 0 ; 0 ; 0 ] ;
+ee(4:6) = ee(4:6) /180*pi;
+toolF = euler2Transform (ee)
 
 
 % base.r = baseR;
@@ -73,20 +78,23 @@ for ii = 1:6
     plate.sBase(:,ii) = sBaseF(1:3,4);
     
     
-    Xsf = uF(1:3,1);
-    Zsf = uF(1:3,3);
-    [Sbproj , Sbprep] = planeProject( sBase , Xsf );
-    
-    vLproj = Sbproj ;
-    
-    fLproj2 = leg.length^2 - (norm(u -Sbprep))^2;
-    
-    gamma = acos( ( transpose(vLproj)*Zsf ) / (norm(vLproj) ) );
-    delta = acos( ( servo.r^2 + norm(vLproj)^2 - fLproj2  ) / (2 * norm(vLproj) * servo.r)  );
-    
-    q = gamma + delta;
-    
-    servo.q(:,ii) = q; 
+%     Xsf = uF(1:3,1);
+%     Zsf = uF(1:3,3);
+%     [Sbproj , Sbprep] = planeProject( sBase , Xsf );
+%     
+%     vLproj = Sbproj ;
+%     
+%     fLproj2 = leg.length^2 - (norm(u -Sbprep))^2;
+%     
+%     gamma = acos( ( transpose(vLproj)*Zsf ) / (norm(vLproj) ) );
+%     delta = acos( ( servo.r^2 + norm(vLproj)^2 - fLproj2  ) / (2 * norm(vLproj) * servo.r)  );
+%     
+%     q = gamma + delta;
+%     
+%     servo.q(:,ii) = q; 
+
+    q = oneLegIK(uF,sBase,leg.length,servo.r);
+
     if( mod(ii+1,2))
         q = -q;
     end
@@ -124,7 +132,7 @@ plot3( [plate.sBase(1,1),plate.sBase(1,ii+1)] ,  [plate.sBase(2,1),plate.sBase(2
 
 %%%%%%%%%%%%%%%%%%%% functions %%%%%%%%%%%%%%%%% 
 
-function [toolF] = q2T (q)
+function [toolF] = euler2Transform (q)
 
     toolF = Transx(q(1)) * Transy(q(2)) * Transz(q(3)) * Rotx(q(4)) * Roty(q(5)) * Rotz(q(6));
     
@@ -134,11 +142,11 @@ function [] = setupFigure(num)
     figure(num)
     clf
     hold on 
-    max = 80;
-    xlim([-max max])
-    ylim([-max max ])
-    zlim([-max max ])
-    view([-150,30])
+    max = 60;
+%     xlim([-max max])
+%     ylim([-max max ])
+%     zlim([-max*0.5 max*1.5 ])
+%     view([-150,30])
     pbaspect([1 1 1])
     rotate3d on
 end
