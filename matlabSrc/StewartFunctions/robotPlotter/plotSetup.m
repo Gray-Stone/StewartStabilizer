@@ -6,7 +6,7 @@ trackLength  = 30;
 
 sc = get(0,'ScreenSize'); % get screen size 
 clf(fig)
-set(fig, 'Position', [sc(3)/15 sc(4)/15 sc(4)/10*8 sc(4)/10*7]); % setup figure base on screen size
+set(fig, 'Position', [sc(3)/15 sc(4)/15 sc(4)/10*8 sc(4)/10*8]); % setup figure base on screen size
 
 %     plots  = [10,11,12;
 %            20,21,22;
@@ -51,7 +51,7 @@ set(fig, 'Position', [sc(3)/15 sc(4)/15 sc(4)/10*8 sc(4)/10*7]); % setup figure 
         end
         set(plotHandle.baseArrow,'LineWidth',3,'color',baseColor , 'MaxHeadSize',6,'AutoScale','off')
         set(plotHandle.toolArrow,'LineWidth',3,'color',plateColor, 'MaxHeadSize',6,'AutoScale','off')
-        anis(ii) = animatedline(tipX,tipY,tipZ,'MaximumNumPoints',trackLength,'linewidth',1.5);
+        anis(ii) = animatedline(tipX,tipY,tipZ,'MaximumNumPoints',trackLength,'linewidth',2);
 
 
         xlim([-limit limit]);

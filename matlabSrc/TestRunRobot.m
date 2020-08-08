@@ -11,7 +11,7 @@ Param = {};
 [Param] = setupParam(Param);
 
 
-homePos = [ 0; 0 ; 35 ; 0 ; 0 ; 0 ] ;
+homePos = [ 0; 0 ; 70 ; 0 ; 0 ; 0 ] ;
 homeToolF = euler2TransMatrix (homePos);
 
 [servoAngle,Param,legError] = SteIK(Param,homeToolF);
@@ -30,37 +30,61 @@ gFrames.baseFrame = homeBaseFrame;
 bPosList = [zeros(6,1)];
 
 % move up
-for ii=2:2:30
-    newbPos = bPosList(end) + [0; 0 ; 2 ; 0 ; 0 ; 0];
+for ii=2:2:10
+    newbPos = bPosList(:,end) + [0; 0 ; 2 ; 0 ; 0 ; 0];
     bPosList = [bPosList newbPos];
 end
 
 % rotate x
-for ii=0.05:0.05:0.3
-    newbPos = bPosList(end) + [0; 0 ; 0 ; 0.05 ; 0 ; 0];
+for ii=0.02:0.02:0.08
+    newbPos = bPosList(:,end) + [0; 0 ; 0 ; 0.02 ; 0 ; 0];
     bPosList = [bPosList newbPos];
 end
 
 % move x
-for ii=2:2:20
-    newbPos = bPosList(end) + [ 2 ; 0 ; 0 ; 0 ; 0 ; 0];
+for ii=2:2:8
+    newbPos = bPosList(:,end) + [ 2 ; 0 ; 0 ; 0 ; 0 ; 0];
     bPosList = [bPosList newbPos];
 end
 
+
+% move y
+for ii=2:2:4
+    newbPos = bPosList(:,end) + [ 0 ; 2 ; 0 ; 0 ; 0 ; 0];
+    bPosList = [bPosList newbPos];
+end
+
+% rotate -x
+for ii=0.02:0.02:0.08
+    newbPos = bPosList(:,end) + [0; 0 ; 0 ; -0.02 ; 0 ; 0];
+    bPosList = [bPosList newbPos];
+end
+
+% move -x
+for ii=2:2:8
+    newbPos = bPosList(:,end) + [ -2 ; 0 ; 0 ; 0 ; 0 ; 0];
+    bPosList = [bPosList newbPos];
+end
+
+% move -z
+for ii=2:2:10
+    newbPos = bPosList(:,end) + [ 0 ; 0 ; -2 ; 0 ; 0 ; 0];
+    bPosList = [bPosList newbPos];
+end
+bPosList = [bPosList zeros(6,1)];
+
  pause(0.5)
+ uCount =1;
 for ii = 1:size(bPosList,2)
     gFrames.baseFrame = euler2TransMatrix(bPosList(:,ii));
-%     tF = inv(gFrames.baseFrame)*gFrames.toolF 
     toolF = inv(gFrames.baseFrame)*gFrames.homeToolF;
-    
-    [gFrames.baseFrame(1:3,4)
-  
-    
     [servoAngle,Param,legError] = SteIK(Param,toolF);
     
     if(isreal(servoAngle) ~= 1)
-        disp("un reachable location!")
-        disp(toolF);
+        disp("unreachable location! " +uCount)
+%         disp(toolF);
+        disp(bPosList(:,ii))
+        uCount = uCount+1;
         continue
     end
     
