@@ -1,4 +1,5 @@
-% clear
+clear
+clc
 
 % Determine where your m-file's folder is.
 folder = fileparts(which(mfilename)); 
@@ -7,11 +8,10 @@ addpath(genpath(folder));
 
 
 % setup parameters
-Param = {};
-[Param] = setupParam(Param);
+[Param] = setupParam();
 
 
-homePos = [ 0; 0 ; 70 ; 0 ; 0 ; 0 ] ;
+homePos = [ 0; 0 ; 20 ; 0 ; 0 ; 0 ] ;
 homeToolF = euler2TransMatrix (homePos);
 
 [servoAngle,Param,legError] = SteIK(Param,homeToolF);
@@ -30,48 +30,48 @@ gFrames.baseFrame = homeBaseFrame;
 bPosList = [zeros(6,1)];
 
 % move up
-for ii=2:2:10
+for ii=2:2:50
     newbPos = bPosList(:,end) + [0; 0 ; 2 ; 0 ; 0 ; 0];
     bPosList = [bPosList newbPos];
 end
+% 
+% % rotate x
+% for ii=0.02:0.02:0.08
+%     newbPos = bPosList(:,end) + [0; 0 ; 0 ; 0.02 ; 0 ; 0];
+%     bPosList = [bPosList newbPos];
+% end
+% 
+% % move x
+% for ii=2:2:8
+%     newbPos = bPosList(:,end) + [ 2 ; 0 ; 0 ; 0 ; 0 ; 0];
+%     bPosList = [bPosList newbPos];
+% end
+% 
+% 
+% % move y
+% for ii=2:2:4
+%     newbPos = bPosList(:,end) + [ 0 ; 2 ; 0 ; 0 ; 0 ; 0];
+%     bPosList = [bPosList newbPos];
+% end
+% 
+% % rotate -x
+% for ii=0.02:0.02:0.08
+%     newbPos = bPosList(:,end) + [0; 0 ; 0 ; -0.02 ; 0 ; 0];
+%     bPosList = [bPosList newbPos];
+% end
+% 
+% % move -x
+% for ii=2:2:8
+%     newbPos = bPosList(:,end) + [ -2 ; 0 ; 0 ; 0 ; 0 ; 0];
+%     bPosList = [bPosList newbPos];
+% end
 
-% rotate x
-for ii=0.02:0.02:0.08
-    newbPos = bPosList(:,end) + [0; 0 ; 0 ; 0.02 ; 0 ; 0];
-    bPosList = [bPosList newbPos];
-end
-
-% move x
-for ii=2:2:8
-    newbPos = bPosList(:,end) + [ 2 ; 0 ; 0 ; 0 ; 0 ; 0];
-    bPosList = [bPosList newbPos];
-end
-
-
-% move y
-for ii=2:2:4
-    newbPos = bPosList(:,end) + [ 0 ; 2 ; 0 ; 0 ; 0 ; 0];
-    bPosList = [bPosList newbPos];
-end
-
-% rotate -x
-for ii=0.02:0.02:0.08
-    newbPos = bPosList(:,end) + [0; 0 ; 0 ; -0.02 ; 0 ; 0];
-    bPosList = [bPosList newbPos];
-end
-
-% move -x
-for ii=2:2:8
-    newbPos = bPosList(:,end) + [ -2 ; 0 ; 0 ; 0 ; 0 ; 0];
-    bPosList = [bPosList newbPos];
-end
-
-% move -z
-for ii=2:2:10
-    newbPos = bPosList(:,end) + [ 0 ; 0 ; -2 ; 0 ; 0 ; 0];
-    bPosList = [bPosList newbPos];
-end
-bPosList = [bPosList zeros(6,1)];
+% % move -z
+% for ii=2:2:40
+%     newbPos = bPosList(:,end) + [ 0 ; 0 ; -2 ; 0 ; 0 ; 0];
+%     bPosList = [bPosList newbPos];
+% end
+% bPosList = [bPosList zeros(6,1)];
 
  pause(0.5)
  uCount =1;
