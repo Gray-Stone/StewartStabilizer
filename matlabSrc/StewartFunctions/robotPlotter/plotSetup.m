@@ -76,6 +76,8 @@ set(fig, 'Position', [sc(3)/15 sc(4)/15 sc(4)/10*8 sc(4)/10*8]); % setup figure 
     view(3);
     rotate3d on;
     title("isometric");
+    pbaspect([1 1 1])
+
 
 %     xz view
     subii = 2;
@@ -87,6 +89,7 @@ set(fig, 'Position', [sc(3)/15 sc(4)/15 sc(4)/10*8 sc(4)/10*8]); % setup figure 
     grid on
     view(0,0);
     title("x-z plane");
+    pbaspect([1 1 1])
 
 
 %     xy view
@@ -99,6 +102,7 @@ set(fig, 'Position', [sc(3)/15 sc(4)/15 sc(4)/10*8 sc(4)/10*8]); % setup figure 
     grid on
     view(0,90);
     title("x-y plane");
+    pbaspect([1 1 1])
 
 
 % yz view
@@ -107,7 +111,8 @@ set(fig, 'Position', [sc(3)/15 sc(4)/15 sc(4)/10*8 sc(4)/10*8]); % setup figure 
     hold on 
     plotHandleList(subii) = setupOnePlot();
     hold off
-    
+    pbaspect([1 1 1])
+
     grid on
     view(-90,0);
     title("y-z plane");

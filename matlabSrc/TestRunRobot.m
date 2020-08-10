@@ -11,7 +11,7 @@ addpath(genpath(folder));
 [Param] = setupParam();
 
 
-homePos = [ 0; 0 ; 20 ; 0 ; 0 ; 0 ] ;
+homePos = [ 0; 0 ; 50 ; 0 ; 0 ; 0 ] ;
 homeToolF = euler2TransMatrix (homePos);
 
 [servoAngle,Param,legError] = SteIK(Param,homeToolF);
@@ -29,49 +29,22 @@ gFrames.baseFrame = homeBaseFrame;
 
 bPosList = [zeros(6,1)];
 
-% move up
-for ii=2:2:50
-    newbPos = bPosList(:,end) + [0; 0 ; 2 ; 0 ; 0 ; 0];
+%trajectory for robot to test with 
+tStart = 0;
+tEnd = 10;
+tStep = 0.08;
+for t=tStart:tStep:tEnd
+    xrotValue = (0.014*sin(t/3))*sin(t*2.2) + (0.020-0.019*t)*cos(t*3);
+    yrotValue = (0.01-0.016*t)*sin(t*3) + (0.015*t)*cos(t*3.5);
+    zOffValue = 5 * sin(t*2) * sin(t*1.5)+6;
+    xOffValue = 2.5 * sin(t*3) * cos(t*1.5);
+    yOffValue = 2.5 * cos(t*3) * sin(t*1.5);
+
+    newbPos =  [xOffValue; yOffValue ; zOffValue ; xrotValue ; yrotValue ; 0];
+    
     bPosList = [bPosList newbPos];
 end
-% 
-% % rotate x
-% for ii=0.02:0.02:0.08
-%     newbPos = bPosList(:,end) + [0; 0 ; 0 ; 0.02 ; 0 ; 0];
-%     bPosList = [bPosList newbPos];
-% end
-% 
-% % move x
-% for ii=2:2:8
-%     newbPos = bPosList(:,end) + [ 2 ; 0 ; 0 ; 0 ; 0 ; 0];
-%     bPosList = [bPosList newbPos];
-% end
-% 
-% 
-% % move y
-% for ii=2:2:4
-%     newbPos = bPosList(:,end) + [ 0 ; 2 ; 0 ; 0 ; 0 ; 0];
-%     bPosList = [bPosList newbPos];
-% end
-% 
-% % rotate -x
-% for ii=0.02:0.02:0.08
-%     newbPos = bPosList(:,end) + [0; 0 ; 0 ; -0.02 ; 0 ; 0];
-%     bPosList = [bPosList newbPos];
-% end
-% 
-% % move -x
-% for ii=2:2:8
-%     newbPos = bPosList(:,end) + [ -2 ; 0 ; 0 ; 0 ; 0 ; 0];
-%     bPosList = [bPosList newbPos];
-% end
 
-% % move -z
-% for ii=2:2:40
-%     newbPos = bPosList(:,end) + [ 0 ; 0 ; -2 ; 0 ; 0 ; 0];
-%     bPosList = [bPosList newbPos];
-% end
-% bPosList = [bPosList zeros(6,1)];
 
  pause(0.5)
  uCount =1;
@@ -91,7 +64,7 @@ for ii = 1:size(bPosList,2)
     [gFrames] =groundFrameGen(gFrames,Param,toolF);
 
     [plotHandleList] = plotUpdate(plotHandleList ,gFrames,anis );
-    pause(0.1)
+    pause(tStep)
 end
 
 

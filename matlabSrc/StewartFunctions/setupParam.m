@@ -4,12 +4,12 @@ function [Param] = setupParam()
 
 
 % setup parameters
-Param.baseR = 75;
-Param.baseAlpha = 15 /180*pi;
-Param.servoArmLength = 40;
-Param.legLength = 80;
-Param.plateR = 40;
-Param.plateBeta = 100/180*pi;
+Param.baseR = 106;
+Param.baseAlpha = 35 /180*pi;
+Param.servoArmLength = 27;
+Param.legLength = 47;
+Param.plateR = 110;
+Param.plateBeta = 66/180*pi;
 
 % generate static frames. 
 Param.uFrames = genMountFrame(Param.baseR,Param.baseAlpha);

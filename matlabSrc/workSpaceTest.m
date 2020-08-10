@@ -1,3 +1,4 @@
+%  setup parameters
 
 clear
 clc
@@ -5,7 +6,6 @@ folder = fileparts(which(mfilename));
 % Add that folder plus all subfolders to the path.
 addpath(genpath(folder));
 
-% setup parameters
 [Param] = setupParam();
 
 
@@ -46,20 +46,32 @@ yMax = yMaxPos(2);
 xyRange = max( [ -xMin -yMin xMax yMax])+10;
 
 
-% finding xy COW for different Z 
+%% finding xy COW for different Z 
 figure(1)
 clf(1)
-for ii = 1:1:9
+numZTest = 8;
+for ii = 1:1:numZTest
     
     zRange = zMax - zMin;
-    TestZ = zMin + zRange * (ii/10);
-    subplot(3,3,ii)
-    testXYworkSpace(Param,xyRange,TestZ);
-    title("COW at Z = " + TestZ);
-    
-end
+    TestZ = zMin + zRange * (ii/(numZTest+1));
+%     subplot(3,3,ii)
+    inRangeList = testXYworkSpace(Param,xyRange,TestZ);
+    hold on 
+	scatter3(inRangeList(1,:),inRangeList(2,:),inRangeList(3,:),1,'g');
+    xlabel("x");
+    ylabel("y");
+    zlabel("z");
+    xlim([-xyRange xyRange]);
+    ylim([-xyRange xyRange]);
+    zlim([0  zMax+10]);
+    hold on
+    pbaspect([1 1 xyRange*2/(zMax+10)])
+    view(3)
 
-% finding xz COW for different Y 
+end
+title("COW");
+
+%% finding xz COW for different Y 
 
 figure(2)
 clf(2)
@@ -73,15 +85,14 @@ for ii = 1:1:9
     
 end
 
-% finding max rotation angle at every direction at center xyz.  
+%% finding max rotation angle at every direction at center xyz.  
 
 figure(3)
 clf(3)
 
-toolPos = [0;0;midZ];
+toolPos = [0;0;midZ-10];
 edgeFList = testXYAngleLimit(Param,toolPos);
 
-subplot(1,2,1)
 hold on 
 angleList = [];
 for ii = 1:size(edgeFList,2)
@@ -96,21 +107,21 @@ for ii = 1:size(edgeFList,2)
     angle = acos( ( transpose(edgeFList(4:6,ii))*[0;0;1] ) / (norm(edgeFList(4:6,ii)) ) );
     angleList = [angleList angle];
 end
-xlim([-15 15]);
-ylim([-15 15]);
-zlim([midZ-15 midZ+15]);
+xlim([-10 10]);
+ylim([-10 10]);
+zlim([midZ-1 midZ+10]);
 view(3);
 rotate3d on;
 title("edge case of rotation workspace at x:0 y:0 z:"+midZ)
 
-% finding min of max rotation angle on all direction at different z height.  
+%% finding min of max rotation angle on all direction at different z height.  
 
 figure(4)
 clf(4)
 zAngleList = [];
 testRange = zMax*0.1;
-for ii = -testRange: (testRange*2)/10 :testRange
-    Z  = midZ+ii;
+for ii = -testRange: (testRange*2)/12 :testRange
+    Z  = midZ-20+ii;
     edgeFList = testXYAngleLimit(Param,[0;0;Z]);
     minAngle = finMinAngle (edgeFList);
     zAngleList = [zAngleList [Z;minAngle]];
@@ -123,29 +134,22 @@ title("min angle at x=0 y=0 and different z height")
 
 
 
-
-function [] = testXYworkSpace(Param,xyRange,Z)
+%% functions 
+function [inRangeList] = testXYworkSpace(Param,xyRange,Z)
     inRangeList = [];
     outRangeList = [];
-    step = 1;
+    step = 2;
     for ii = -xyRange:step:xyRange
         for jj = -xyRange:step:xyRange
             toolF = euler2TransMatrix([ii;jj;Z;0;0;0]);
             [servoAngle,Param,~] = SteIK(Param,toolF);
             if(isreal(servoAngle) ==1)
-                inRangeList = [inRangeList [ii;jj] ];
+                inRangeList = [inRangeList [ii;jj;Z] ];
             else
-                outRangeList = [outRangeList [ii;jj] ];
+                outRangeList = [outRangeList [ii;jj;Z] ];
             end
         end
     end
-    hold on 
-	scatter(inRangeList(1,:),inRangeList(2,:),1,'g');
-%     scatter(outRangeList(1,:),outRangeList(2,:),1 ,'r');
-    xlabel("x");
-    ylabel("y");
-    xlim([-xyRange xyRange]);
-    ylim([-xyRange xyRange]);
 
 end
 
@@ -177,7 +181,7 @@ end
 
 
 function [edgeFList] = testXYAngleLimit(Param,toolPos)
-    step = 0.01;
+    step = 0.05;
     edgeFList = [];
     for ii = -pi/2:step:pi/2
         initFlage = 0;
